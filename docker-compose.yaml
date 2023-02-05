@@ -1,0 +1,56 @@
+version: "3.8"
+name: Eshop
+services:
+  eshop_backend:
+    container_name: eshop_backend
+    hostname: eshop_backend
+    build:
+      context: .
+      dockerfile: ./DockerFiles/php/Dockerfile
+    volumes:
+      - ./app/:/var/www/html
+      - ./DockerFiles/php/php.ini-development:/usr/local/etc/php/php.ini-development
+    depends_on:
+      - eshop_db
+    # command: ["/bin/bash", "-c", "composer update && php artisan migrate && php-fpm -y /usr/local/etc/php-fpm.conf -R"]
+
+  eshop_webserver:
+    container_name: eshop_webserver
+    hostname: eshop_webserver
+    image: nginx
+    volumes:
+    - ./config/nginx:/etc/nginx/conf.d/
+    - ./app/:/var/www/html
+    ports:
+      - 80:80
+
+  eshop_db:
+    container_name: eshop_db
+    hostname: eshop_db
+    image: mysql:8.0.20
+    restart: always
+    volumes:
+      - ./storage/db-data:/var/lib/mysql
+    environment:
+      MYSQL_HOST: eshop_db
+      MYSQL_DATABASE: eshop_db
+      MYSQL_ROOT_PASSWORD: root
+
+  eshop_redis:
+    container_name: eshop_redis
+    hostname: eshop_redis
+    image: redis:latest
+    
+
+  eshop_elasticsearch:
+    container_name: eshop_elasticsearch
+    hostname: eshop_elasticsearch
+    image: elasticsearch:7.17.8
+    volumes:
+      - ./storage/es-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+
+  
+  
