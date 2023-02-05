@@ -9,7 +9,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>SB Admin 2 - Dashboard</title>
+        <title>@yield('title')</title>
 
         <!-- Custom fonts for this template-->
         <link href="{{ asset("adminstuff/css/all.min.css") }}" rel="stylesheet" type="text/css">
@@ -34,10 +34,10 @@
                 <!-- Main Content -->
                 <div id="content">
                     @include('layouts.admin.inc.topbar')
-                    
+
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
-                        <h1>Hello Dashboard</h1>
+                        @yield('content')
                     </div>
                 </div>
             </div>
