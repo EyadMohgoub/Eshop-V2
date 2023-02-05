@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     return view('welcome');
+})->name('homepage');
+
+Route::group([
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+], function()
+{
+    Route::prefix('admin')->middleware('isAdmin')->group(function() {
+        Route::get('/', [\App\Http\Controllers\admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    });
 });
 
-Route::prefix('admin')->middleware('isAdmin')->group(function() {
-    Route::get('/', [\App\Http\Controllers\admin\DashboardController::class, 'index']);
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
