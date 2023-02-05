@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('admin')->middleware('isAdmin')->group(function() {
+    Route::get('/', [\App\Http\Controllers\admin\DashboardController::class, 'index']);
+});
